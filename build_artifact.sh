@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+docker build -t grecycubesgav/slackbuild-clevis:latest .
+docker create --name temp_container grecycubesgav/slackbuild-clevis:latest
+mkdir -p packages
+docker cp temp_container:/tmp/clevis-20-x86_64-GG_GG.tgz ./packages/
+docker cp temp_container:/tmp/jose-12-x86_64-GG_GG.tgz ./packages/
+docker cp temp_container:/tmp/cryptsetup-2.7.1-x86_64-GG.txz ./packages/
+docker cp temp_container:/tmp/clevis-unraid-01-noarch-GG_GG.txz ./packages/
+docker rm temp_container
+md5sum ./packages/*.*
