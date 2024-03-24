@@ -1,0 +1,101 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name       "network.disk.unlock">
+<!ENTITY author     "greycubesgav">
+<!ENTITY version    "2024.03.21">
+<!ENTITY icon       "key">
+<!ENTITY gitURL		  "https://github.com/greycubesgav/clevis.unraid/raw/main/clevis.unraid/">
+<!ENTITY pluginURL	"&gitURL;/network.disk.unlock.plg">
+<!ENTITY pluginDIR  "/boot/config/plugins/&name;">
+<!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
+<!ENTITY supportURL	"https://github.com/greycubesgav/unraid-templates/">
+<!ENTITY pkg_name   "unraid.network.disk.unlock">
+<!ENTITY pkg_pkg    "unraid.network.disk.unlock-01-noarch-GG_GG.txz">
+<!ENTITY pkg_md5    "2f395207eccd22977c3e5eb49ddf7a6d">
+<!ENTITY src_name   "clevis">
+<!ENTITY src_pkg    "clevis-20-x86_64-GG_GG.tgz">
+<!ENTITY src_md5    "14a2f1b2efd8e8711bd1a891bca52a2a">
+<!ENTITY dep1_name  "jose">
+<!ENTITY dep1_pkg   "jose-12-x86_64-GG_GG.tgz">
+<!ENTITY dep1_md5   "7650a026fdb05d7b62825420ada8834f">
+]>
+<PLUGIN name="&name;"
+		author="&author;"
+		version="&version;"
+		pluginURL="&pluginURL;"
+		support="&supportURL;"
+		icon="&icon;"
+		min="6.12.0">
+<CHANGES>
+###2024.03.20
+- Initial release based on clevis v20, built against cryptsetup-2.6.1
+</CHANGES>
+
+<!-- Install dep1 - jose -->
+<FILE Name="&pluginDIR;/&dep1_pkg;" Run="upgradepkg --install-new --reinstall">
+  <URL>&gitURL;packages/&dep1_pkg;</URL>
+  <MD5>&dep1_md5;</MD5>
+</FILE>
+
+<!-- Install src - clevis -->
+<FILE Name="&pluginDIR;/&src_pkg;" Run="upgradepkg --install-new --reinstall">
+  <URL>&gitURL;/packages/&src_pkg;</URL>
+  <MD5>&src_md5;</MD5>
+</FILE>
+
+<!-- Install pkg - clevis-unraid -->
+<FILE Name="&pluginDIR;/&pkg_pkg;" Run="upgradepkg --install-new --reinstall">
+  <URL>&gitURL;/packages/&pkg_pkg;</URL>
+  <MD5>&pkg_md5;</MD5>
+</FILE>
+
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/sh">
+<INLINE>
+cat &lt;&lt; EOF
++==============================================================================
+Plugin &name; v&version; is installed
+
+-----------------------------------------------
+..######..########.########.##.....##.########.
+.##....##.##..........##....##.....##.##.....##
+.##.......##..........##....##.....##.##.....##
+..######..######......##....##.....##.########.
+.......##.##..........##....##.....##.##.......
+.##....##.##..........##....##.....##.##.......
+..######..########....##.....#######..##.......
+-----------------------------------------------
+
+This plugin requires one time only clevis setup on each encrypted disk.
+
+See &supportURL; for full setup instructions.
++==============================================================================
+EOF
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+echo "----------------------------------------------------"
+echo "------- Uninstalling &name; and dependancies -------"
+echo "----------------------------------------------------"
+# Remove plugin related files
+echo "Removing &pkg_name;package...."
+removepkg &pluginDIR;/&pkg_pkg;
+echo "Removing &src_name; package...."
+removepkg &pluginDIR;/&src_pkg;
+echo "Removing &dep1_name; package...."
+removepkg &pluginDIR;/&dep1_pkg;
+echo "Removing web directory....."
+rm -rf &emhttp;
+echo "Removing plugin directory...."
+rm -rf &pluginDIR;
+echo
+echo "--------------------------------------------------------------------------------"
+echo "-------------------- &name; and dependancies uninstalled! ----------------------"
+echo "--------------------------------------------------------------------------------"
+echo
+</INLINE>
+</FILE>
+
+</PLUGIN>
