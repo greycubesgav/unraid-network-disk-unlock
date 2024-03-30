@@ -19,21 +19,25 @@ if [ "$1" = "luksOpen" ]; then
     # luksOpen /dev/sde1 sde1 --allow-discards         --key-file=/root/keyfile
     if [ -n "$4" ] && [ "$4" != '--key-file=/root/keyfile' ]; then
       # We pass this option on to clevis
-      /usr/bin/logger -t "$logger_tag" "rerouting to {/usr/bin/clevis luks unlock -d \"$2\" -n \"$3\" -o \"$4\"}"
+      /usr/bin/logger -t "$logger_tag" " rerouting to {/usr/bin/clevis luks unlock -d \"$2\" -n \"$3\" -o \"$4\"}"
       if ! /usr/bin/clevis luks unlock -d "$2" -n "$3" -o "$4"; then
-        /usr/bin/logger -t "$logger_tag" "failed to unlock with clevis, passing through to real /sbin/cryptsetup"
+        /usr/bin/logger -t "$logger_tag" "  failed to unlock with clevis, passing through to real /sbin/cryptsetup"
         /sbin/cryptsetup "$@"
+      else
+        /usr/bin/logger -t "$logger_tag" "  succesfully unlocked with clevis device \"$2\" --options \"$4\""
       fi
     else
       # We don't pass any option over to clevis
-      /usr/bin/logger -t "$logger_tag" "rerouting to {/usr/bin/clevis luks unlock -d \"$2\" -n \"$3\"}"
+      /usr/bin/logger -t "$logger_tag" " rerouting to {/usr/bin/clevis luks unlock -d \"$2\" -n \"$3\"}"
       if ! /usr/bin/clevis luks unlock -d "$2" -n "$3"; then
-        /usr/bin/logger -t "$logger_tag" "failed to unlock with clevis, passing through to real /sbin/cryptsetup"
+        /usr/bin/logger -t "$logger_tag" "  failed to unlock with clevis, passing through to real /sbin/cryptsetup"
         /sbin/cryptsetup "$@"
+      else
+        /usr/bin/logger -t "$logger_tag" "  succesfully unlocked with clevis device \"$2\""
       fi
     fi
 else
     # Otherwise just pass all arguments directly to cryptsetup
-    /usr/bin/logger -t "$logger_tag" "no luksOpen, passing through to real /sbin/cryptsetup"
+    /usr/bin/logger -t "$logger_tag" " no luksOpen, passing through to real /sbin/cryptsetup"
     /sbin/cryptsetup "$@"
 fi
