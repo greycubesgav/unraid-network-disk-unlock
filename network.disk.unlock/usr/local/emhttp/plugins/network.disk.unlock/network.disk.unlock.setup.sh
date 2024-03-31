@@ -12,7 +12,7 @@ get_encrypted_disks() {
   return $ret
 }
 
-input_file="./disks.ini"
+disks_file='/usr/local/emhttp/state/disks.ini'
 
 # Startup
 echo -e "This script is part of the network.disk.unlock plugin for Unraid.
@@ -29,10 +29,10 @@ echo '
 ██║     ██║   ██║██╔═██╗ ╚════██║    ██║  ██║██║╚════██║██╔═██╗ ╚════██║
 ███████╗╚██████╔╝██║  ██╗███████║    ██████╔╝██║███████║██║  ██╗███████║
 ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝    ╚═════╝ ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
-==========================================================================='
+========================================================================='
 
 # Try and get the list of luks encrypted disks
-if ! luks_disks=$(get_encrypted_disks "$input_file"); then
+if ! luks_disks=$(get_encrypted_disks "$disks_file"); then
   echo "Error: failed to get a list of any encrypted disks from unraid." >&2
   echo "Have you setup any encrypted disks in Unraid yet?" >&2
   exit 2
@@ -106,18 +106,19 @@ if [ -n "$devices_to_do" ]; then
         fi
     done <<< "$devices_to_do"
 else
+  echo ""
   echo "No luks encrypted devices in Unraid are missing tang server setup."
 fi
 
 
 echo '
-██╗  ██╗███████╗██╗   ██╗    ██████╗ ███████╗██████╗ ██╗      █████╗  ██████╗███████╗
-██║ ██╔╝██╔════╝╚██╗ ██╔╝    ██╔══██╗██╔════╝██╔══██╗██║     ██╔══██╗██╔════╝██╔════╝
-█████╔╝ █████╗   ╚████╔╝     ██████╔╝█████╗  ██████╔╝██║     ███████║██║     █████╗
-██╔═██╗ ██╔══╝    ╚██╔╝      ██╔══██╗██╔══╝  ██╔═══╝ ██║     ██╔══██║██║     ██╔══╝
-██║  ██╗███████╗   ██║       ██║  ██║███████╗██║     ███████╗██║  ██║╚██████╗███████╗
-╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝╚══════╝
-======================================================================================='
+██╗  ██╗███████╗██╗   ██╗    ███████╗██╗██╗     ███████╗
+██║ ██╔╝██╔════╝╚██╗ ██╔╝    ██╔════╝██║██║     ██╔════╝
+█████╔╝ █████╗   ╚████╔╝     █████╗  ██║██║     █████╗
+██╔═██╗ ██╔══╝    ╚██╔╝      ██╔══╝  ██║██║     ██╔══╝
+██║  ██╗███████╗   ██║       ██║     ██║███████╗███████╗
+╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝     ╚═╝╚══════╝╚══════╝
+========================================================='
 
 # Replace any existing keyfile that doesn't match our placeholder one
 if [ -f '/root/keyfile' ] && cmp -s '/root/keyfile' <(echo 'network.disk.unlock.placeholder'); then
@@ -157,4 +158,6 @@ echo '
 ██████╔╝╚██████╔╝██║ ╚████║███████╗
 ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝'
 echo "Setup completed!"
+echo ""
 echo "Please reboot your server to start start using your tang server to unlock your disks!"
+echo "Note: You do not need to run this script agains unless you add a new encrypted disk to Unraid"

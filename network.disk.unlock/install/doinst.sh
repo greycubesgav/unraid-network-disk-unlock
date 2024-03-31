@@ -37,7 +37,7 @@ if [ -f /root/keyfile ]; then
   /usr/bin/logger -t "$logger_tag" 'Prexisting /root/keyfile aborting'
   exit 5
 fi
-if ! echo 'keyfile' > /root/keyfile; then
+if ! echo 'network.disk.unlock.placeholder' > /root/keyfile; then
   /usr/bin/logger -t "$logger_tag" 'Failed to write to placeholder /root/keyfile aborting'
   exit 6
 fi
