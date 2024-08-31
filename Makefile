@@ -20,4 +20,4 @@ docker-artifact-build:
 	--target artifact --output type=local,dest=./pkgs/ .
 
 plugin-fix-hashes:
-	./update_plg.sh
+	./update_plg.sh "$(DOCKER_IMAGE_VERSION)"

@@ -26,8 +26,15 @@ jobs:
         name: slackbuild-pkgs
         path: pkgs/
 
+    - name: Get Current Tag
+      run: |
+        TAG_NAME="${GITHUB_REF#refs/tags/}"
+        echo "Current Tag: $TAG_NAME"
+        # Export the tag name as a GitHub Actions environment variable
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
     - name: Update plugin hashes
-      run: make plugin-fix-hashes
+      run: make plugin-fix-hashes DOCKER_IMAGE_VERSION="$TAG_NAME"
 
     - name: Plugin to pkgs
       run: cp network.disk.unlock.plg pkgs/

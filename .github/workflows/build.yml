@@ -9,11 +9,18 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: build
-        run: make docker-artifact-build
+      - name: Get Current Tag
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          echo "Current Tag: $TAG_NAME"
+          # Export the tag name as a GitHub Actions environment variable
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Build Packages
+        run: make docker-artifact-build DOCKER_IMAGE_VERSION="$TAG_NAME"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
