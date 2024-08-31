@@ -1,7 +1,7 @@
 FROM greycubesgav/slackware-docker-base:latest AS builder
 
 # Set our prepended build artifact tag and build dir
-ENV TAG='_GG' BUILD='-1'
+ENV TAG='_GG' BUILD='1'
 
 RUN mkdir cryptsetup
 WORKDIR /root/cryptsetup
