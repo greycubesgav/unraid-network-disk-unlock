@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 plugin_version="$1"
-VERSION=${plugin_version:=0.0.0}
+VERSION=${plugin_version:=0000.00.00}
 
 # Script to update the plugin file with details of the latest built packages
 plugin_tmpl_file=network.disk.unlock.plg.tmpl
 plugin_file=network.disk.unlock.plg
+github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/${VERSION}/"
+
 
 cd pkgs || exit 1
 md5sum clevis-*.tgz jose-*.tgz unraid.network.disk.unlock-*.txz > md5sums
@@ -40,6 +42,9 @@ awk -v pkg="$jose_pkg" '/<!ENTITY dep2_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' "
 cat tmp_plg.txt > "$plugin_file"
 
 awk -v ver="$VERSION" '/<!ENTITY version/ {gsub(/"[^"]*"/, "\"" ver "\"")}1' "$plugin_file" > tmp_plg.txt
+cat tmp_plg.txt > "$plugin_file"
+
+awk -v url="$github_url" '/<!ENTITY gitURL/ {gsub(/"[^"]*"/, "\"" url "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
 rm tmp_plg.txt

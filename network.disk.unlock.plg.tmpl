@@ -2,9 +2,9 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "network.disk.unlock">
 <!ENTITY author     "greycubesgav">
-<!ENTITY version    "2024.03.30">
+<!ENTITY version    "2024.09.01">
 <!ENTITY icon       "key">
-<!ENTITY gitURL		  "https://github.com/greycubesgav/unraid-network-disk-unlock/raw/main/unraid-network-disk-unlock/">
+<!ENTITY gitURL		  "https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/2024.09.01">
 <!ENTITY pluginURL	"&gitURL;/network.disk.unlock.plg">
 <!ENTITY pluginDIR  "/boot/config/plugins/&name;">
 <!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
@@ -33,19 +33,19 @@
 
 <!-- Install dep2 - jose -->
 <FILE Name="&pluginDIR;/&dep2_pkg;" Run="upgradepkg --install-new --reinstall">
-  <URL>&gitURL;packages/&dep2_pkg;</URL>
+  <URL>&gitURL;/&dep2_pkg;</URL>
   <MD5>&dep2_md5;</MD5>
 </FILE>
 
 <!-- Install dep1 - clevis -->
 <FILE Name="&pluginDIR;/&dep1_pkg;" Run="upgradepkg --install-new --reinstall">
-  <URL>&gitURL;/packages/&dep1_pkg;</URL>
+  <URL>&gitURL;/&dep1_pkg;</URL>
   <MD5>&dep1_md5;</MD5>
 </FILE>
 
 <!-- Install pkg - unraid.network.disk.unlock -->
 <FILE Name="&pluginDIR;/&src_pkg;" Run="upgradepkg --install-new --reinstall">
-  <URL>&gitURL;/packages/&src_pkg;</URL>
+  <URL>&gitURL;/&src_pkg;</URL>
   <MD5>&src_md5;</MD5>
 </FILE>
 
