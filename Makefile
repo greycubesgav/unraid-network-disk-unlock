@@ -18,3 +18,6 @@ docker-artifact-build:
 	--platform $(DOCKER_PLATFORM) --file Dockerfile \
 	--tag $(DOCKER_USER)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) \
 	--target artifact --output type=local,dest=./pkgs/ .
+
+plugin-fix-hashes:
+	./update_plg.sh
