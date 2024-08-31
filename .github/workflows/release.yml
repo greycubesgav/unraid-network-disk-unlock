@@ -26,6 +26,12 @@ jobs:
         name: slackbuild-pkgs
         path: pkgs/
 
+    - name: Update plugin hashes
+      run: make plugin-fix-hashes
+
+    - name: Plugin to pkgs
+      run: cp network.disk.unlock.plg pkgs/
+
     - name: Display structure of downloaded packages
       run: ls -R pkgs/
 
