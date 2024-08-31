@@ -18,22 +18,22 @@ plugin_pkg=$(grep unraid.network.disk.unlock ./pkgs/md5sums | awk '{print $2}')
 echo "Updating $plugin_file..."
 echo "plugin_pkg: [$plugin_pkg]"
 
-cat "$plugin_tmpl_file"  | awk -v md5="$plugin_md5" '/<!ENTITY src_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' > tmp_plg.txt
+awk -v md5="$plugin_md5" '/<!ENTITY src_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' "$plugin_tmpl_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
-cat "$plugin_file"     | awk -v md5="$clevis_md5" '/<!ENTITY dep1_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' > tmp_plg.txt
+awk -v md5="$clevis_md5" '/<!ENTITY dep1_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
-cat "$plugin_file"     | awk -v md5="$jose_md5" '/<!ENTITY dep2_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' > tmp_plg.txt
+awk -v md5="$jose_md5" '/<!ENTITY dep2_md5/ {gsub(/"[^"]*"/, "\"" md5 "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
-cat "$plugin_file"     | awk -v pkg="$plugin_pkg" '/<!ENTITY src_file/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' > tmp_plg.txt
+awk -v pkg="$plugin_pkg" '/<!ENTITY src_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
-cat "$plugin_file"     | awk -v pkg="$clevis_pkg" '/<!ENTITY dep1_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' > tmp_plg.txt
+awk -v pkg="$clevis_pkg" '/<!ENTITY dep1_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
-cat "$plugin_file"     | awk -v pkg="$jose_pkg" '/<!ENTITY dep2_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' > tmp_plg.txt
+awk -v pkg="$jose_pkg" '/<!ENTITY dep2_pkg/ {gsub(/"[^"]*"/, "\"" pkg "\"")}1' "$plugin_file" > tmp_plg.txt
 cat tmp_plg.txt > "$plugin_file"
 
 rm tmp_plg.txt
