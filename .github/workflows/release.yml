@@ -29,6 +29,9 @@ jobs:
     - name: Get Current Tag
       run: |
         TAG_NAME="${GITHUB_REF#refs/tags/}"
+        if [ "$TAG_NAME" == "refs/heads/main" ]; then
+          TAG_NAME="0.0.0"
+        fi
         echo "Current Tag: $TAG_NAME"
         # Export the tag name as a GitHub Actions environment variable
         echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
