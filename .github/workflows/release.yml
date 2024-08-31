@@ -1,0 +1,40 @@
+name: Create Release
+
+on:
+
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build.yml
+
+  create_release:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download Packages from build step
+      uses: actions/download-artifact@v4
+      with:
+        name: slackbuild-pkgs
+        path: pkgs/
+
+    - name: Display structure of downloaded packages
+      run: ls -R pkgs/
+
+    - name: Create new release and upload packages
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: pkgs/*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
+        draft: true

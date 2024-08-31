@@ -1,87 +1,7 @@
-FROM vbatts/slackware:15.0
+FROM greycubesgav/slackware-docker-base:latest AS builder
 
-USER root
-ENV USER=root
-
-
-RUN echo y | slackpkg update
-
-RUN echo y | slackpkg install lzlib
-
-RUN echo y | slackpkg install \
-      autoconf \
-      autoconf-archive \
-      automake \
-      binutils \
-      kernel-headers \
-      pkg-tools \
-      glibc \
-      automake \
-      autoconf \
-      m4 \
-      gcc \
-      g++ \
-      meson \
-      ninja \
-      ar \
-      flex \
-      pkg-config \
-      cmake \
-      libarchive \
-      lz4 \
-      libxml2 \
-      nghttp2 \
-      brotli \
-      cyrus-sasl \
-      jansson \
-      elfutils \
-      guile \
-      gc \
-      cryptsetup \
-      curl \
-      python3 \
-      zlib \
-      socat \
-      linuxdoc-tools \
-      keyutils \
-      openssl \
-      libxslt \
-      openldap \
-      libnsl \
-      lvm2 \
-      eudev \
-      json-c  \
-      make \
-      libffi \
-      libidn2 \
-      libssh2 \
-      ca-certificates
-
-RUN echo y | slackpkg install \
-      libgcrypt \
-      libgpg-error \
-      dcron \
-      udisks2
-
-RUN echo y | slackpkg install \
-      openssh
-
-# Set the SlackBuild tag
-ENV TAG='_GG'
-ENV BUILD='GG'
-
-# Cryptsetup build
-WORKDIR /root
-RUN echo y | slackpkg install lvm2 \
- popt \
- pkg-config \
- json-c \
- libssh2 \
- libssh \
- argon2 \
- flex \
- libgpg-error \
- libgcrypt
+# Set our prepended build artifact tag and build dir
+ENV TAG='_GG' BUILD='-1'
 
 RUN mkdir cryptsetup
 WORKDIR /root/cryptsetup
@@ -92,7 +12,8 @@ COPY src/cryptsetup-2.6.1.tar.xz /root/cryptsetup
 COPY src/cryptsetup.SlackBuild /root/cryptsetup
 WORKDIR /root/cryptsetup/
 RUN ./cryptsetup.SlackBuild
-RUN installpkg /tmp/cryptsetup-2.6.1-x86_64-GG.txz
+RUN ls -l /tmp
+RUN installpkg /tmp/cryptsetup-*.txz
 
 # Build JQ
 # Required for the building of jose and clevis
@@ -102,7 +23,7 @@ RUN tar zxf jq.tar.gz
 WORKDIR /root/jq
 RUN wget --no-check-certificate 'https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz'
 RUN ./jq.SlackBuild
-RUN installpkg /tmp/jq-1.7.1-x86_64-GG_GG.tgz
+RUN installpkg /tmp/jq-*.tgz
 
 # Build jose from custom slackware-build
 # Install for clevis build
@@ -114,7 +35,7 @@ RUN unzip jose-build.zip
 WORKDIR /root/jose/slackbuild-jose-main/
 RUN wget --no-check-certificate $(sed -n 's/DOWNLOAD="\(.*\)"/\1/p' *.info)
 RUN ./jose.SlackBuild
-RUN installpkg /tmp/jose-12-x86_64-GG_GG.tgz
+RUN installpkg /tmp/jose-*.tgz
 
 # Build luksmeta from custom slackware-build
 # Install for clevis build
@@ -125,7 +46,7 @@ RUN unzip luksmeta-build.zip
 WORKDIR /root/luksmeta/slackbuild-luksmeta-main/
 RUN wget --no-check-certificate $(sed -n 's/DOWNLOAD="\(.*\)"/\1/p' *.info)
 RUN ./luksmeta.SlackBuild
-RUN installpkg /tmp/luksmeta-9-x86_64-GG_GG.tgz
+RUN installpkg /tmp/luksmeta-*.tgz
 
 # # Build tpm2-tss from custom slackware-build
 # # Install for tpm2-tools build
@@ -158,12 +79,17 @@ RUN unzip clevis-build.zip
 WORKDIR /root/clevis/slackbuild-clevis-main/
 RUN wget --no-check-certificate $(sed -n 's/DOWNLOAD="\(.*\)"/\1/p' *.info) && ls
 RUN ./clevis.SlackBuild
-RUN installpkg /tmp/clevis-20-x86_64-GG_GG.tgz
+RUN installpkg /tmp/clevis-*.tgz
 
 # Copy into the docker image the clevis-unraid scripts
+ARG PLG_VERSION=1.0.0
 COPY network.disk.unlock/ /root/network.disk.unlock/
 WORKDIR /root/network.disk.unlock/
-RUN /sbin/makepkg -l y -c n "/tmp/unraid.network.disk.unlock-01-noarch-$BUILD$TAG.txz"
-RUN installpkg "/tmp/unraid.network.disk.unlock-01-noarch-$BUILD$TAG.txz"
+RUN /sbin/makepkg -l y -c n "/tmp/unraid.network.disk.unlock-${PLG_VERSION}-noarch-$BUILD$TAG.txz"
+RUN installpkg "/tmp/unraid.network.disk.unlock-${PLG_VERSION}-noarch-$BUILD$TAG.txz"
 
-CMD ["/bin/bash","-l"]
+ENTRYPOINT [ "bash" ]
+
+## Create a clean image with only the artifact
+FROM scratch AS artifact
+COPY --from=builder /tmp/clevis*.* /tmp/jose*.* /tmp/unraid.network.disk.unlock*.* ./
