@@ -4,7 +4,7 @@
 <!ENTITY author     "greycubesgav">
 <!ENTITY version    "2024.03.30">
 <!ENTITY icon       "key">
-<!ENTITY gitURL		  "https://github.com/greycubesgav/clevis.unraid/raw/main/clevis.unraid/">
+<!ENTITY gitURL		  "https://github.com/greycubesgav/unraid-network-disk-unlock/raw/main/unraid-network-disk-unlock/">
 <!ENTITY pluginURL	"&gitURL;/network.disk.unlock.plg">
 <!ENTITY pluginDIR  "/boot/config/plugins/&name;">
 <!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
@@ -43,7 +43,7 @@
   <MD5>&src_md5;</MD5>
 </FILE>
 
-<!-- Install pkg - clevis-unraid -->
+<!-- Install pkg - unraid.network.disk.unlock -->
 <FILE Name="&pluginDIR;/&pkg_pkg;" Run="upgradepkg --install-new --reinstall">
   <URL>&gitURL;/packages/&pkg_pkg;</URL>
   <MD5>&pkg_md5;</MD5>
