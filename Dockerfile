@@ -92,4 +92,4 @@ RUN ./network.disk.unlock.plg.tmpl-update.sh
 
 ## Create a clean image with only the artifact
 FROM scratch AS artifact
-COPY --from=builder /root/built.pkgs/*network.disk.unlock*.* ./
+COPY --from=builder /root/built.pkgs/* ./

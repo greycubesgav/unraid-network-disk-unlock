@@ -7,7 +7,6 @@ VERSION=${plugin_version:=0000.00.00}
 plugin_tmpl_file=network.disk.unlock.plg.tmpl
 plugin_file='/root/built.pkgs/network.disk.unlock.plg'
 
-
 md5sum /root/built.pkgs/* > /root/built.pkgs/md5sums
 
 # clevis_md5=$(grep clevis /root/built.pkgs/md5sums | awk '{print $1}')
@@ -61,3 +60,7 @@ cat tmp_plg.txt > "$plugin_file"
 echo "github_url: [$github_url]"
 awk -v url="$github_url" '/<!ENTITY gitURL/ {gsub(/"[^"]*"/, "\"" url "\"")}1' "$plugin_file" > tmp_plg.txt
 mv tmp_plg.txt "$plugin_file"
+
+cd /root/built.pkgs/
+rm -f md5sums
+md5sum ./* > md5sums
