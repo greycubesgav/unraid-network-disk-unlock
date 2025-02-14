@@ -20,9 +20,7 @@ plugin_md5=$(grep unraid.network.disk.unlock /root/built.pkgs/md5sums | awk '{pr
 plugin_pkg=$(basename "$(grep unraid.network.disk.unlock /root/built.pkgs/md5sums| awk '{print $2}')" )
 
 # Extract the version from the package name
-#VERSION=${plugin_pkg//*-[0-9]\{8\}-*/}
-date_str=$(echo "$plugin_pkg" | sed 's/.*-\([0-9]\{8\}\)-.*/\1/')
-VERSION=${date_str:0:4}.${date_str:4:2}.${date_str:6:2}
+VERSION=$(echo "$plugin_pkg" | sed 's/.*-\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\}\)-.*/\1/' )
 
 github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/${VERSION}"
 
@@ -62,6 +60,4 @@ cat tmp_plg.txt > "$plugin_file"
 # Update the github url
 echo "github_url: [$github_url]"
 awk -v url="$github_url" '/<!ENTITY gitURL/ {gsub(/"[^"]*"/, "\"" url "\"")}1' "$plugin_file" > tmp_plg.txt
-cat tmp_plg.txt > "$plugin_file"
-
-rm tmp_plg.txt
+mv tmp_plg.txt "$plugin_file"

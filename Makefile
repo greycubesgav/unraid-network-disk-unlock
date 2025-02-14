@@ -12,7 +12,7 @@ DOCKER_PLATFORM=linux/amd64
 # Add NOCACHE='--no-cache' to force a rebuild e.g.: make NOCACHE='--no-cache' docker-image-build-current
 NOCACHE=
 # Set the build version to the current date
-BUILD=$(shell date +%Y%m%d)
+BUILD=1
 VERSION=$(shell date +%Y.%m.%d)
 TAG='_GG'
 # Make sure we are running bash, not 'dash' under github actions

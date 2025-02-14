@@ -26,31 +26,20 @@ jobs:
         name: slackbuild-pkgs
         path: pkgs/
 
-    - name: Get Current Tag
+    - name: Debug Inputs
       run: |
-        TAG_NAME="${GITHUB_REF#refs/tags/}"
-        if [ "$TAG_NAME" == "refs/heads/main" ]; then
-          TAG_NAME="0.0.0"
-        fi
-        echo "Current Tag: $TAG_NAME"
-        # Export the tag name as a GitHub Actions environment variable
-        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        echo "Received package_version=${{ needs.build.outputs.package_version }}"
+        echo "Received build_version=${{ needs.build.outputs.build_version }}"
+      shell: bash
 
-    - name: Update plugin hashes
-      run: make plugin-fix-hashes DOCKER_IMAGE_VERSION="$TAG_NAME"
-
-    - name: Plugin to pkgs
-      run: cp network.disk.unlock.plg pkgs/
-
-    - name: Display structure of downloaded packages
-      run: ls -R pkgs/
-
-    - name: Create new release and upload packages
-      uses: svenstaro/upload-release-action@v2
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v2
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: pkgs/*
-        tag: ${{ github.ref }}
-        overwrite: true
-        file_glob: true
+        tag_name: v${{ needs.build.outputs.package_version }}-${{ needs.build.outputs.build_version }}
+        name: v${{ needs.build.outputs.package_version }}-${{ needs.build.outputs.build_version }}
         draft: true
+        files: pkgs/*
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

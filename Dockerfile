@@ -82,7 +82,7 @@ ARG UNRAID_VERSION='v7.x.x' BUILD=1 TAG='_GG' VERSION=1.0.0 ARC=x86_64
   # Copy into the docker image the clevis-unraid scripts
 COPY src/ /root/src/
 WORKDIR /root/src/network.disk.unlock/
-RUN mkdir '/root/built.pkgs/' && /sbin/makepkg -l y -c n "/root/built.pkgs/unraid.network.disk.unlock-${VERSION}-${ARC}${TAG}.txz"
+RUN mkdir '/root/built.pkgs/' && /sbin/makepkg -l y -c n "/root/built.pkgs/unraid.network.disk.unlock-${VERSION}-${ARC}${TAG}-${BUILD}.txz"
 # Part 2 - Create the plugin xml file
 # Create the plugin xml file
 WORKDIR /root/src/

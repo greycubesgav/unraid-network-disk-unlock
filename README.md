@@ -5,32 +5,52 @@ This repository holds the code to build my Unraid Network Disk Unlocker plugin.
 Network Disk Unlocker allows [Unraid](https://unraid.net/) to decrypt disks using [clevis](https://github.com/latchset/clevis) bound to a remote [Tang server](https://github.com/latchset/tang). This allows for fully secure array unlocking without the need for a keyfile on the server or manual intervention to start the arrray.
 
 <p align="center">
-  <img src="src/screenshot01.png" width="800" title="network_disk_unlocker_screenshot">
+  <img src="docs/screenshot01.png" width="800" title="network_disk_unlocker_screenshot">
 </p>
+
+# Install Instructions
+
+### Pre-requisites
+
+This plugin requires access to a tang server; https://github.com/latchset/tang
+
+The easiest way to setup a local tang server may be to use the docker image such as; https://hub.docker.com/r/padhihomelab/tang
+
+**Note: this tang server must not be running in your Unraid server as the tang server must accesible to your Unraid server before the array is started.**
+
+### 1. Install this Plugin in Unraid
+* Browse to your Unraid Dashboard
+* Navidate to Plugins -> Install Plugin Tab
+* Enter the following URL `https://github.com/greycubesgav/unraid-network-disk-unlock/releases/latest/download/network.disk.unlock.plg`
+* Click the [INSTALL] button
+
+### 2. Bind your encrypted disks to your tang server
+
+* Ensure your Tang server is running, and you know the tang server url
+e.g. ``http://tang.server:port/adv``
+* Open a root terminal in your Unraid server
+* Run the following command `/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh`
+* The script will guide you through the process of attaching your encrypted disks you your tang server
+* Once the script is finished adding tang binds to your encrypted disks, reboot your Unraid server
 
 # Build Instructions
 
-Running `./build_artifact.sh` will build a Slackware 15 base docker image and proceed to build all the required slackware packages build the final 3 artifacts needed for the plugin:
+## Building the Plugin
+Running the following make command will rebuild the plugin using the Dockerfile and output the resultant files in ./pkgs
+```bash
+make docker-artifact-build-current
+```
 
-1. jose-12-x86_64-GG_GG.tgz
-1. clevis-20-x86_64-GG_GG.tgz
-1. unraid.network.disk.unlock-01-noarch-GG_GG.txz
+To build the plugin without any cached docker layers
 
-These packages will be copied out of the file image and placed in the ./packages directory.
+```bash
+make NOCACHE='--no-cache' docker-artifact-build-current
+```
 
-See the my Unraid Templates repository for details of how to carry out the requisite setup on your encrypted array disks to allow the plugin to unlock the disks automatically using a remote tang server.
+## Update the plugin dependencies and rebuild
 
-
-# Build Architecture
-
-This repository is setup to rebuild all dependancies using copies of source packages stored in this repo.
-
-#### Why not pull the source during the docker build?
-
-I've never been comfortable with relying on report downloads during my builds, as this ties the success of the build to remote sites you don't control. Those sites go do, your internet is out, etc., you can't rebuild your packages.
-
-#### Why not use pre-complied binary packages?
-
-As of Feb '25, Unraid has two major versions in use, v6.x.x and v7.x.x.
-Each of these Unraid version use different versions of libcrypto, meaning when we build our packages, all the dependancies also need to built against the right libcrypto version.
-By building all dependancies in this repo we ensure all dependancy versions match the target libcrypto version we're building against.
+Running the following make command will update the dependencies and rebuild the plugin using the Dockerfile and output the resultant files in ./pkgs
+```bash
+make NOCACHE='--no-cache' update-dependencies
+make docker-artifact-build-current
+```
