@@ -20,8 +20,9 @@ plugin_pkg=$(basename "$(grep unraid.network.disk.unlock /root/built.pkgs/md5sum
 
 # Extract the version from the package name
 VERSION=$(echo "$plugin_pkg" | sed 's/.*-\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\}\)-.*/\1/' )
+PACKAGE_BUILD=$(echo $plugin_pkg | sed -n 's/.*-\([0-9]\+\)\.txz$/\1/p')
 
-github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/${VERSION}"
+github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/v${VERSION}-${PACKAGE_BUILD}"
 
 echo "Updating $plugin_file..."
 
