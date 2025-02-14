@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                           |-----handy-ruler------------------------------------------------------|
+unraid.network.disk.unlock: unraid.network.disk.unlock (an unraid encrypted disk network unlocker)
+unraid.network.disk.unlock:
+unraid.network.disk.unlock: unraid.network.disk.unlock is a plugin for Unraid to allow encrypted
+unraid.network.disk.unlock: disks to be automatically unlocked at boot time from a remote tang
+unraid.network.disk.unlock: server.
+unraid.network.disk.unlock:
+unraid.network.disk.unlock: Homepage: https://github.com/greycubesgav/unraid-network-disk-unlock
+unraid.network.disk.unlock:
+unraid.network.disk.unlock:
+unraid.network.disk.unlock:
+unraid.network.disk.unlock:

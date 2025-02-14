@@ -1,0 +1,91 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name       "network.disk.unlock">
+<!ENTITY author     "greycubesgav">
+<!ENTITY version    "2024.09.01">
+<!ENTITY icon       "key">
+<!ENTITY gitURL     "https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/2024.09.01">
+<!ENTITY pluginURL  "&gitURL;/network.disk.unlock.plg">
+<!ENTITY pluginDIR  "/boot/config/plugins/&name;">
+<!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
+<!ENTITY supportURL "https://github.com/greycubesgav/unraid-templates/">
+<!ENTITY src_name   "unraid.network.disk.unlock">
+<!ENTITY src_pkg    "unraid.network.disk.unlock-01-noarch-GG_GG.txz">
+<!ENTITY src_md5    "7b319a7260a16c4a00c08a882388237c">
+]>
+<PLUGIN name="&name;"
+		author="&author;"
+		version="&version;"
+		pluginURL="&pluginURL;"
+		support="&supportURL;"
+		icon="&icon;"
+		min="6.12.0">
+<CHANGES>
+###2025.02.12
+- Rebuilt against Unraid v6 (libcrypto.so.1.1) and Unraid v (libcrypto.so.3)
+- Moved dependancies into main package, simplifying installation across Unraid versions
+
+###2024.03.30
+- Initial release based on clevis v20, built against cryptsetup-2.6.1
+</CHANGES>
+
+
+<!-- Install pkg - unraid.network.disk.unlock -->
+<FILE Name="&pluginDIR;/&src_pkg;" Run="upgradepkg --install-new --reinstall">
+  <URL>&gitURL;/&src_pkg;</URL>
+  <MD5>&src_md5;</MD5>
+</FILE>
+
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/sh">
+<INLINE>
+cat &lt;&lt; EOF
++==============================================================================
+Plugin &name; v&version; is installed
+
+███████╗███████╗████████╗██╗   ██╗██████╗
+██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
+███████╗█████╗     ██║   ██║   ██║██████╔╝
+╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
+███████║███████╗   ██║   ╚██████╔╝██║
+╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
+
+This plugin requries a tang server to be accessible to your Unraid server.
+
+See &supportURL; for simple instructions to setup a local tang server.
+
+This plugin also requires a one time only clevis setup on each encrypted disk.
+Open the Terminal in the Unraid webinterface and run the following command to
+be guided through the process:
+
+/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh
+
+For manual setup, see &supportURL; for full setup instructions.
++==============================================================================
+EOF
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+echo "----------------------------------------------------"
+echo "------- Uninstalling &name; and dependancies -------"
+echo "----------------------------------------------------"
+# Remove plugin related files
+echo "Removing &src_name;package...."
+removepkg &pluginDIR;/&src_pkg;
+
+echo "Removing web directory....."
+rm -rf &emhttp;
+
+echo "Removing plugin directory...."
+rm -rf &pluginDIR;
+echo
+echo "--------------------------------------------------------------------------------"
+echo "-------------------- &name; and dependancies uninstalled! ----------------------"
+echo "--------------------------------------------------------------------------------"
+echo
+</INLINE>
+</FILE>
+
+</PLUGIN>
