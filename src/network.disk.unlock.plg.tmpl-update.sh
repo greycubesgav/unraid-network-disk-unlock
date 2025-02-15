@@ -7,22 +7,21 @@ VERSION=${plugin_version:=0000.00.00}
 plugin_tmpl_file=network.disk.unlock.plg.tmpl
 plugin_file='/root/built.pkgs/network.disk.unlock.plg'
 
-md5sum /root/built.pkgs/* > /root/built.pkgs/md5sums
+#md5sum /root/built.pkgs/* > /root/built.pkgs/md5sums
 
 # clevis_md5=$(grep clevis /root/built.pkgs/md5sums | awk '{print $1}')
 # clevis_pkg=$(basename "$(grep clevis /root/built.pkgs/md5sums | awk '{print $2}')" )
 
 # jose_md5=$(grep clevis /root/built.pkgs/md5sums | awk '{print $1}')
 # jose_pkg=$(basename "$(grep jose /root/built.pkgs/md5sums | awk '{print $2}')" )
-
-plugin_md5=$(grep unraid.network.disk.unlock /root/built.pkgs/md5sums | awk '{print $1}')
+plugin_md5=$(md5sum /root/built.pkgs/unraid.network.disk.unlock-*.txz | awk '{print $1}')
 plugin_pkg=$(basename "$(grep unraid.network.disk.unlock /root/built.pkgs/md5sums| awk '{print $2}')" )
 
 # Extract the version from the package name
 VERSION=$(echo "$plugin_pkg" | sed 's/.*-\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\}\)-.*/\1/' )
-PACKAGE_BUILD=$(echo $plugin_pkg | sed -n 's/.*-\([0-9]\+\)\.txz$/\1/p')
+#PACKAGE_BUILD=$(echo $plugin_pkg | sed -n 's/.*-\([0-9]\+\)\.txz$/\1/p')
 
-github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/v${VERSION}-${PACKAGE_BUILD}"
+#github_url="https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/v${VERSION}-${PACKAGE_BUILD}"
 
 echo "Updating $plugin_file..."
 
@@ -58,10 +57,12 @@ awk -v ver="$VERSION" '/<!ENTITY version/ {gsub(/"[^"]*"/, "\"" ver "\"")}1' "$p
 cat tmp_plg.txt > "$plugin_file"
 
 # Update the github url
-echo "github_url: [$github_url]"
-awk -v url="$github_url" '/<!ENTITY gitURL/ {gsub(/"[^"]*"/, "\"" url "\"")}1' "$plugin_file" > tmp_plg.txt
+#echo "github_url: [$github_url]"
+#awk -v url="$github_url" '/<!ENTITY gitURL/ {gsub(/"[^"]*"/, "\"" url "\"")}1' "$plugin_file" > tmp_plg.txt
+
+# Update the plugin file
 mv tmp_plg.txt "$plugin_file"
 
-cd /root/built.pkgs/
-rm -f md5sums
-md5sum ./* > md5sums
+# Setup .md5 files for all artifacts
+cd /root/built.pkgs/ || exit 2
+find . -type f -not -name "." -iname '*.*' -exec sh -c 'md5sum "$1" > "$1.md5"' sh {} \;

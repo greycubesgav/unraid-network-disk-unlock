@@ -4,7 +4,7 @@
 <!ENTITY author     "greycubesgav">
 <!ENTITY version    "2024.09.01">
 <!ENTITY icon       "key">
-<!ENTITY gitURL     "https://github.com/greycubesgav/unraid-network-disk-unlock/releases/download/2024.09.01">
+<!ENTITY gitURL     "https://github.com/greycubesgav/unraid-network-disk-unlock/releases/latest/download">
 <!ENTITY pluginURL  "&gitURL;/network.disk.unlock.plg">
 <!ENTITY pluginDIR  "/boot/config/plugins/&name;">
 <!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
@@ -21,6 +21,11 @@
 		icon="&icon;"
 		min="6.12.0">
 <CHANGES>
+###2025.02.15
+- Fixed plugin url to download latest version
+- Added better logging, Unraid notifications and more defensive code to plugins initial doinst.sh script
+- Added more defensive code and guides to plugin's setup script
+
 ###2025.02.12
 - Rebuilt against Unraid v6 (libcrypto.so.1.1) and Unraid v (libcrypto.so.3)
 - Moved dependancies into main package, simplifying installation across Unraid versions
@@ -28,7 +33,6 @@
 ###2024.03.30
 - Initial release based on clevis v20, built against cryptsetup-2.6.1
 </CHANGES>
-
 
 <!-- Install pkg - unraid.network.disk.unlock -->
 <FILE Name="&pluginDIR;/&src_pkg;" Run="upgradepkg --install-new --reinstall">
@@ -55,12 +59,12 @@ This plugin requries a tang server to be accessible to your Unraid server.
 See &supportURL; for simple instructions to setup a local tang server.
 
 This plugin also requires a one time only clevis setup on each encrypted disk.
-Open the Terminal in the Unraid webinterface and run the following command to
+Open the Terminal in the Unraid dashboard and run the following command to
 be guided through the process:
 
 /usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh
 
-For manual setup, see &supportURL; for full setup instructions.
+For more information, visit &supportURL;
 +==============================================================================
 EOF
 </INLINE>
