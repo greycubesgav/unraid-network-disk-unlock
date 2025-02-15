@@ -41,6 +41,7 @@ docker-image-run:
 	$(eval DOCKER_FULL_TARGET_IMAGE_NAME=$(DOCKER_USER)/$(DOCKER_TARGET_IMAGE_NAME):v$(BUILD_VERSION).$(BUILD_COUNT))
 	@echo "Running $(DOCKER_FULL_TARGET_IMAGE_NAME)"
 	docker run --platform $(DOCKER_PLATFORM) --rm -it \
+		-v /etc/localtime:/etc/localtime:ro \
 		$(DOCKER_FULL_TARGET_IMAGE_NAME)
 
 # -------------------------------------------------------------------------------------------------------

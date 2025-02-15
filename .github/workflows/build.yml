@@ -21,6 +21,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone Europe/Bucharest
+          # Verify the timezone was set
+          date
+
       - name: Get Current Tag
         run: |
           TAG_NAME="${GITHUB_REF#refs/tags/}"
