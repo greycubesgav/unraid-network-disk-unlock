@@ -33,7 +33,7 @@ jobs:
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       - name: Build Packages
-        run: make docker-artifact-build-current
+        run: make docker-artifact-build
 
       - name: Extract Package Version
         id: extract_package_version
