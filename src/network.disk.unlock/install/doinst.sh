@@ -141,10 +141,13 @@ if [ -f /root/keyfile ] && ! cmp -s /root/keyfile <(echo 'network.disk.unlock.pl
     'Issue setting up placeholder keyfile' \
     'The current [/root/keyfile] file is not a known placeholder. Your array local encryption key may still be vulnerable. Please run the plugin setup script: [/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh]' \
     'warning'
+else
+  echo "> ${logger_tag}: Creating placeholder keyfile to allow auto decryption"
+  if ! /usr/bin/install -m 0600 -o root -g root /dev/null /root/keyfile && echo 'network.disk.unlock.placeholder' > /root/keyfile; then
+    /usr/bin/logger -t "$logger_tag" 'Failed to write to placeholder /root/keyfile aborting'
+    exit 16
+  fi
 fi
-#if ! echo 'network.disk.unlock.placeholder' > /root/keyfile; then
-#  /usr/bin/logger -t "$logger_tag" 'Failed to write to placeholder /root/keyfile aborting'
-#  exit 16
-#fi
+
 echo "> ${logger_tag}: Plugin successfully installed"
 /usr/bin/logger -t "$logger_tag" 'Plugin successfully installed'
