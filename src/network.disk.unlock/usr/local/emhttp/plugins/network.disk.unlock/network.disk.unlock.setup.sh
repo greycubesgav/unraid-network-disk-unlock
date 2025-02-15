@@ -68,7 +68,7 @@ while read -r line; do
     echo "Warning: issue readling luks list for device [/dev/${device}1], disk not encrypted?" >&2
     continue
   else
-    if  tang_servers=$(echo "$tang_servers" | grep 'tang'); then
+    if ! tang_servers=$(echo "$tang_servers" | grep 'tang'); then
       # We didn't find any tang servers for this disk
       echo "<no tang binds, adding to list>"
       devices_to_do="$device $devices_to_do"
