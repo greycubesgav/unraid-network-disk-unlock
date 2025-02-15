@@ -4,4 +4,7 @@ Network Disk Unlocker allows Unraid to decrypt disks using a remote Tang server.
 
 Setup requires some manual steps and a remote tang server.
 
-See https://github.com/greycubesgav/clevis-unraid for fully setup instructions.
+Run the setup script as root to setup your encrypted disks:
+/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh
+
+See https://github.com/greycubesgav/unraid-network-disk-unlock for fully setup instructions.

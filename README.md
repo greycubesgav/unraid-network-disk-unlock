@@ -21,15 +21,17 @@ The easiest way to setup a local tang server may be to use the docker image such
 ### 1. Install this Plugin in Unraid
 * Browse to your Unraid Dashboard
 * Navidate to Plugins -> Install Plugin Tab
-* Enter the following URL `https://github.com/greycubesgav/unraid-network-disk-unlock/releases/latest/download/network.disk.unlock.plg`
+* Enter the following URL
+`https://github.com/greycubesgav/unraid-network-disk-unlock/releases/latest/download/network.disk.unlock.plg`
 * Click the [INSTALL] button
 
 ### 2. Bind your encrypted disks to your tang server
 
 * Ensure your Tang server is running, and you know the tang server url
-e.g. ``http://tang.server:port/adv``
+e.g. ``http://tang.server:port``
 * Open a root terminal in your Unraid server
-* Run the following command `/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh`
+* Run the following command
+`/usr/local/emhttp/plugins/network.disk.unlock/network.disk.unlock.setup.sh`
 * The script will guide you through the process of attaching your encrypted disks you your tang server
 * Once the script is finished adding tang binds to your encrypted disks, reboot your Unraid server
 

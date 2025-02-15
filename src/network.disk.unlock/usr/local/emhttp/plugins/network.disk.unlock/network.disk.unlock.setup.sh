@@ -63,17 +63,18 @@ while read -r line; do
     continue
   fi
 
+  echo -n "${device}1 : "
   if ! tang_servers=$(clevis luks list -d "/dev/${device}1" 2>/dev/null ); then
-    echo "${device}1 : Warning: issue readling luks list for device [/dev/${device}1], disk not encrypted?" >&2
+    echo "Warning: issue readling luks list for device [/dev/${device}1], disk not encrypted?" >&2
     continue
   else
-    if ! tang_servers=$(echo "$tang_servers" | grep 'tang'); then
+    if  tang_servers=$(echo "$tang_servers" | grep 'tang'); then
       # We didn't find any tang servers for this disk
-      echo "${device}1 <no tang binds>"
+      echo "<no tang binds, adding to list>"
       devices_to_do="$device $devices_to_do"
       continue
     else
-      echo -e "${device}1 : already contains at least one tang server bind:\n├─${tang_servers}\n└──skipping\n"
+      echo -e "already contains at least one tang server bind:\n├─${tang_servers}\n└──skipping\n"
       #sed -E "s/^.*/${device}1 slot \0/" <<< "$tang_servers"
       continue
     fi
