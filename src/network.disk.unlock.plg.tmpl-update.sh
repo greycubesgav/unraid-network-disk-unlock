@@ -7,7 +7,7 @@ plugin_md5=$(md5sum /root/built.pkgs/unraid.network.disk.unlock-*.txz | awk '{pr
 plugin_pkg=$(basename "$(find /root/built.pkgs/ -type f -name 'unraid.network.disk.unlock-*.txz'| head -1)" )
 
 # Extract the version from the package name
-plugin_version=$(echo "$plugin_pkg" | grep -Po '(\d{4}\.\d{2}\.\d{2})-[^-]+-(\d+)(?=_)' | sed -E 's|-[^-]+-|.|' )
+plugin_version=$(echo "$plugin_pkg" | grep -Po '(\d{4}\.\d{2}\.\d{2})-[^-]+-(\d+)(?=_)' | sed -E 's|-[^-]+-|-|' )
 
 echo "Updating [$plugin_file]..."
 

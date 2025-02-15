@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.extract_package_version.outputs.package_version }}
-      build_version: ${{ steps.extract_package_version.outputs.build_version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -38,17 +37,11 @@ jobs:
       - name: Extract Package Version
         id: extract_package_version
         run: |
-          PACKAGE_FILE=$(ls pkgs/unraid.network.disk.unlock-*-x86_64_GG-*.txz)
-          PACKAGE_VERSION=$(echo $PACKAGE_FILE | grep -oP '\d{4}\.\d{2}\.\d{2}')
+          PACKAGE_FILE=$(ls pkgs/unraid.network.disk.unlock-*.txz)
+          PACKAGE_VERSION=$(echo $PACKAGE_FILE | grep -Po '(\d{4}\.\d{2}\.\d{2})-[^-]+-(\d+)(?=_)' | sed -E 's|-[^-]+-|-|' )
           echo "Package Version: $PACKAGE_VERSION"
-          PACKAGE_BUILD=$(echo $PACKAGE_FILE | sed -n 's/.*-\([0-9]\+\)\.txz$/\1/p')
-          echo "Build Version: $PACKAGE_BUILD"
-          # Export the package version as a GitHub Actions environment variable
-          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           # Export the package version as a step outout value
           echo "package_version=${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
-          # Export the build version as a step outout value
-          echo "build_version=${PACKAGE_BUILD}" >> "$GITHUB_OUTPUT"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4

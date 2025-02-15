@@ -29,15 +29,14 @@ jobs:
     - name: Debug Inputs
       run: |
         echo "Received package_version=${{ needs.build.outputs.package_version }}"
-        echo "Received build_version=${{ needs.build.outputs.build_version }}"
       shell: bash
 
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ needs.build.outputs.package_version }}-${{ needs.build.outputs.build_version }}
-        name: v${{ needs.build.outputs.package_version }}-${{ needs.build.outputs.build_version }}
+        tag_name: v${{ needs.build.outputs.package_version }}
+        name: v${{ needs.build.outputs.package_version }}
         draft: true
         files: pkgs/*
         generate_release_notes: true
