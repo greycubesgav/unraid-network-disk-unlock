@@ -2,7 +2,10 @@ ARG DOCKER_FULL_BASE_IMAGE_NAME=greycubesgav/slackware-docker-base:aclemons-curr
 FROM ${DOCKER_FULL_BASE_IMAGE_NAME} AS builder
 
 # Set our prepended build artifact tag and build dir
-ARG UNRAID_VERSION='v7.x.x' BUILD=1 TAG='_GG' VERSION=1.0.0 ARC=x86_64
+ARG BUILD_COUNT=1 BUILD_TAG='_GG' BUILD_VERSION=1.0.0 BUILD_ARCH=x86_64
+
+# Set ENV variables to retain ARG values
+ENV BUILD_COUNT=${BUILD_COUNT} BUILD_TAG=${BUILD_TAG} BUILD_VERSION=${BUILD_VERSION} BUILD_ARCH=${BUILD_ARCH}
 
 # #-------------------
 # # Jose build
@@ -82,14 +85,15 @@ ARG UNRAID_VERSION='v7.x.x' BUILD=1 TAG='_GG' VERSION=1.0.0 ARC=x86_64
   # Copy into the docker image the clevis-unraid scripts
 COPY src/ /root/src/
 WORKDIR /root/src/network.disk.unlock/
-RUN mkdir '/root/built.pkgs/' && /sbin/makepkg -l y -c n "/root/built.pkgs/unraid.network.disk.unlock-${VERSION}-${ARC}${TAG}-${BUILD}.txz"
+RUN mkdir '/root/built.pkgs/' && /sbin/makepkg -l y -c n "/root/built.pkgs/unraid.network.disk.unlock-${BUILD_VERSION}-${BUILD_ARCH}-${BUILD_COUNT}${BUILD_TAG}.txz"
 # Part 2 - Create the plugin xml file
 # Create the plugin xml file
 WORKDIR /root/src/
 RUN ./network.disk.unlock.plg.tmpl-update.sh
+RUN ls -l /root/built.pkgs/
 
 #ENTRYPOINT [ "bash" ]
 
-## Create a clean image with only the artifact
+# Create a clean image with only the artifact
 FROM scratch AS artifact
 COPY --from=builder /root/built.pkgs/* ./
