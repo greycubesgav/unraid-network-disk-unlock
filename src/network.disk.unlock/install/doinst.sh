@@ -143,7 +143,11 @@ if [ -f /root/keyfile ] && ! cmp -s /root/keyfile <(echo 'network.disk.unlock.pl
     'warning'
 else
   echo "> ${logger_tag}: Creating placeholder keyfile to allow auto decryption"
-  if ! /usr/bin/install -m 0600 -o root -g root /dev/null /root/keyfile && echo 'network.disk.unlock.placeholder' > /root/keyfile; then
+  if ! /usr/bin/install -m 0600 -o root -g root /dev/null /root/keyfile; then
+    /usr/bin/logger -t "$logger_tag" 'Failed to create placeholder /root/keyfile aborting'
+    exit 15
+  fi
+  if ! echo 'network.disk.unlock.placeholder' > /root/keyfile; then
     /usr/bin/logger -t "$logger_tag" 'Failed to write to placeholder /root/keyfile aborting'
     exit 16
   fi
