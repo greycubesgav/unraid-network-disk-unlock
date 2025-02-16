@@ -7,9 +7,6 @@ on:
       package_version:
         description: The version of the package built by make
         value: ${{ jobs.build.outputs.package_version }}
-      build_version:
-        description: The version of the build version built by make
-        value: ${{ jobs.build.outputs.build_version }}
 
 jobs:
   build:
